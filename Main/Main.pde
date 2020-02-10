@@ -1,12 +1,16 @@
+import java.util.Random;
+
 Board board;
 int radius = 30;
 int offset = radius / 2;
+int maxSpeed = 10;
 CustomBoolean p1up = new CustomBoolean();
 CustomBoolean p1down = new CustomBoolean();
 CustomBoolean p2up = new CustomBoolean();
 CustomBoolean p2down = new CustomBoolean();
 Player player1;
 Player player2;
+
 
 void setup(){
   size(1024, 600);
