@@ -1,11 +1,23 @@
+import java.util.Random;
+
 class Ball {
   private int x, y;
-  private int vx = 15, vy = 2;
+  private int[] direction = { -1, 1};
+  private Random random = new Random();
+  private int vx, vy;
   private boolean dead = false;
+  
   
   public Ball (int x, int y){
     this.x = x;
     this.y = y;
+    initSpeed();
+  }
+  
+  private void initSpeed(){
+    vx = 15 * direction[random.nextInt(2)];
+    vy = 2 * direction[random.nextInt(2)];
+    System.out.println(vx);
   }
   
   private void update(){

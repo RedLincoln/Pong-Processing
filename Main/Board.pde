@@ -1,13 +1,13 @@
 import java.util.List;
 import java.util.ArrayList;
-
-
+import java.util.Random;
 
 class Board {
   private List<Player> players = new ArrayList(); 
   private List<Ball> balls = new ArrayList();
   private int ballAmount = 1;
   private int maxScore = 10;
+  private Random random = new Random();
   
   public void addPlayer(Player player){
     players.add(player);
@@ -17,9 +17,6 @@ class Board {
     this.ballAmount = ballAmount; 
   }
   
-  private void changeMaxScore(int maxScore){
-    this.maxScore = maxScore;
-  }
   
   private void drawMiddle(){
     int reach = 0;
@@ -103,8 +100,14 @@ class Board {
   
   private void initBalls(){
     balls.clear();
+    int minX = (int)(width / 2 - width * 0.2);
+    int rangeX = (int)(width * 0.4);
+    int minY = (int)(height / 4);
+    int rangeY = (int)(height / 2);
     for (int i = 0; i < ballAmount; i++){
-        balls.add(new Ball(width / 2, height / 2));
+        int x  = minX + (int)(random.nextFloat() * rangeX);
+        int y  = minY + (int)(random.nextFloat() * rangeY);
+        balls.add(new Ball(x, y));
       }
   }
   
