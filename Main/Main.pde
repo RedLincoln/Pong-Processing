@@ -2,12 +2,14 @@ enum State {
   mainMenu,
   modeMenu,
   gameOver,
-  play;
+  play,
+  prolog;
 }
 
 Board board;
 Board viewBoard;
 State state = State.mainMenu;
+boolean gameStart = false;
 int radius = 30;
 int offset = radius / 2;
 int maxSpeed = 10;
@@ -79,7 +81,9 @@ void draw(){
   if (state != State.play && board.gameFinished()){
       board.startGame();
   }
-  board.draw();
+  if (state != State.prolog){
+    board.draw();
+  }
   if (state == State.modeMenu){
     modeMenuView();
   }else if (state == State.mainMenu){
@@ -87,7 +91,20 @@ void draw(){
   }else if (board.gameFinished()){
     state = State.gameOver;
     gameOverView();
+  }else if (state == State.prolog){
+    prologView();
   }
+}
+
+void prologView(){
+  if (!gameStart){
+    gameStart = true;
+    board.draw();
+  }
+  textSize(35);
+  text("Press space to start", width / 2, height / 4);
+  text(player1.getName(), width / 4, height / 2);
+  text(player2.getName(), 3 * width / 4, height / 2); 
 }
 
 void modeMenuView(){
@@ -131,6 +148,11 @@ void keyPressed(){
     p2up.setState(true);
   }else if(keyCode == DOWN){
     p2down.setState(true);
+  }
+  if (state == State.prolog){
+    if (keyCode == ' '){
+      state = State.play;
+    }
   }
 }
 
@@ -178,11 +200,11 @@ void mouseClicked(){
     }   
   }else if (state == State.modeMenu){
     if (classicButton.isMouseOver()){
-      state = State.play;
+      state = State.prolog;
       board.changeBallAmount(1);
       board.startGame();
     }else if (crazyButton.isMouseOver()){
-      state = State.play;
+      state = State.prolog;
       board.changeBallAmount(crazyAmount);
       board.startGame();
     }else if (modeToMainMenuButton.isMouseOver()){
