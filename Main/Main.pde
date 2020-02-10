@@ -6,6 +6,7 @@ enum State {
 }
 
 Board board;
+Board viewBoard;
 State state = State.mainMenu;
 int radius = 30;
 int offset = radius / 2;
@@ -29,15 +30,7 @@ Button modeToMainMenuButton;
 
 void setup(){
   size(1024, 600);
-  board = new Board();
-  player1 = new Player("Player 1", (int)(width * 0.05), height / 2);
-  player2 = new Player("Player 2", (int)(width * 0.95), height / 2);
-  player1.addUpCommand(p1up);
-  player1.addDownCommand(p1down);
-  player2.addUpCommand(p2up);
-  player2.addDownCommand(p2down);
-  board.addPlayer(player1);
-  board.addPlayer(player2);
+  setupBoard();
   restartButton  = initButton("Restart", width / 2, height / 2, 180, 40);
   gameOverToMenuButton = initButton( "Menu", width / 2, height / 2 + 60, 180, 40);
   playButton = initButton("Play", width / 2, height / 2 - 40, 180, 40);
@@ -50,6 +43,20 @@ void setup(){
   rectMode(CENTER);
 }
 
+void setupBoard(){
+  board = new Board();
+  board.changeBallAmount(crazyAmount);
+  player1 = new Player("Player 1", (int)(width * 0.05), height / 2);
+  player2 = new Player("Player 2", (int)(width * 0.95), height / 2);
+  player1.addUpCommand(p1up);
+  player1.addDownCommand(p1down);
+  player2.addUpCommand(p2up);
+  player2.addDownCommand(p2down);
+  board.addPlayer(player1);
+  board.addPlayer(player2);
+}
+
+
 Button initButton(String text, int x, int y, int w, int h){
  Button button  = new Button(text, x, y, w, h);
  button.changeFontSize(20);
@@ -57,6 +64,10 @@ Button initButton(String text, int x, int y, int w, int h){
 }
 
 void draw(){
+  if (state != State.play && board.gameFinished()){
+      board.startGame();
+  }
+  board.draw();
   if (state == State.modeMenu){
     modeMenuView();
   }else if (state == State.mainMenu){
@@ -64,8 +75,6 @@ void draw(){
   }else if (board.gameFinished()){
     state = State.gameOver;
     gameOverView();
-  }else {
-    board.draw();
   }
 }
 

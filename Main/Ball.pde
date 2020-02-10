@@ -15,9 +15,8 @@ class Ball {
   }
   
   private void initSpeed(){
-    vx = 15 * direction[random.nextInt(2)];
+    vx = 2 * direction[random.nextInt(2)];
     vy = 2 * direction[random.nextInt(2)];
-    System.out.println(vx);
   }
   
   private void update(){
