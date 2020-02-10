@@ -11,6 +11,7 @@ class Player {
   public Player(String name, int x, int y){
     this.x = x;
     this.y = y;
+    this.name = name;
   }
   
   public void draw(){
@@ -59,5 +60,9 @@ class Player {
   
   public int getH(){
     return h;  
+  }
+  
+  public String getName(){
+    return name;
   }
 }

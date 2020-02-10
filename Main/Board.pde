@@ -83,6 +83,17 @@ class Board {
     return false;
   }
   
+  public String getWinner(){
+    String winner = "No one";
+    for (Player player: players){
+      if (player.getScore() == maxScore){
+        winner = player.getName();
+        break;
+      }
+    }
+    return winner;
+  }
+  
   public void draw(){
     if (balls.size() == 0){    
       for (int i = 0; i < ballAmount; i++){

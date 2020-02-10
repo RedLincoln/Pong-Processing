@@ -24,10 +24,26 @@ void setup(){
   player2.addDownCommand(p2down);
   board.addPlayer(player1);
   board.addPlayer(player2);
+  textAlign(CENTER);
 }
 
 void draw(){
-  board.draw();
+  if (board.gameFinished()){
+    board.draw();
+  }else {
+    rectMode(CENTER);
+    fill(255, 255, 255);
+    rect(width / 2, height / 2, 300, 200);
+    fill(0, 0, 0);
+    textSize(20);
+    text(board.getWinner(), width / 2, height / 2 - 60);
+    Button button  = new Button("Restart", width / 2, height / 2, 180, 40);
+    button.changeFontSize(20);
+    button.draw();
+    Button button2  = new Button("Menu", width / 2, height / 2 + 60, 180, 40);
+    button2.changeFontSize(20);
+    button2.draw();
+  }
 }
 
 void keyPressed(){
