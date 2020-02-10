@@ -1,12 +1,15 @@
-public void settings(){  
-  size(1024, 640);
-}
+import java.util.List;
+import java.util.ArrayList;
+
 
 
 class Board {
-  
+  private List<Player> players = new ArrayList(); 
+   
   public Board(){
-       
+    System.out.println(width);
+    players.add(new Player("Player 1", (int)(width * 0.05), height / 2));
+    players.add(new Player("Player 2", (int)(width * 0.95), height / 2));
   }
   
   private void drawMiddle(){
@@ -20,9 +23,16 @@ class Board {
       reach += (h + gap);
     }
   }
-    
+  
+  private void drawPlayers(){
+    for(Player player: players){
+      player.draw();
+    }
+  }
+  
   public void draw(){
     background(0, 0, 0);
     drawMiddle();
+    drawPlayers();
   }
 }
