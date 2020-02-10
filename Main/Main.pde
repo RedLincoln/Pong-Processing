@@ -1,8 +1,9 @@
 Board board;
-int offset = 10;
+int radius = 30;
+int offset = radius / 2;
 
 void setup(){
-  size(1024, 640);
+  size(1024, 600);
   board = new Board();
 }
 
