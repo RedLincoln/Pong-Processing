@@ -8,11 +8,12 @@ class Board {
   private Ball ball;
   
   
-  public Board(){
-    System.out.println(width);
-    players.add(new Player("Player 1", (int)(width * 0.05), height / 2));
-    players.add(new Player("Player 2", (int)(width * 0.95), height / 2));
+  public Board(){    
     ball = new Ball(width / 2, height / 2);
+  }
+  
+  public void addPlayer(Player player){
+    players.add(player);
   }
   
   private void drawMiddle(){
@@ -30,6 +31,12 @@ class Board {
   private void drawPlayers(){
     for(Player player: players){
       player.draw();
+    }
+  }
+  
+  private void checkPlayerCollision(){
+    for (Player player: players){
+      ball.checkCollision(player.getX(), player.getY(), player.getW(), player.getH());
     }
   }
   
