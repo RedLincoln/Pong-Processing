@@ -7,6 +7,7 @@ class Board {
   private List<Player> players = new ArrayList(); 
   private List<Ball> balls = new ArrayList();
   private int ballAmount = 1;
+  private int maxScore = 10;
   
   public void addPlayer(Player player){
     players.add(player);
@@ -14,6 +15,10 @@ class Board {
   
   private void changeBallAmount(int ballAmount){
     this.ballAmount = ballAmount; 
+  }
+  
+  private void changeMaxScore(int maxScore){
+    this.maxScore = maxScore;
   }
   
   private void drawMiddle(){
@@ -70,9 +75,16 @@ class Board {
     ball.draw();
   }
   
+  public boolean gameFinished(){
+    for(Player player: players){
+      if (player.getScore() >= maxScore)
+        return true;
+    }
+    return false;
+  }
   
   public void draw(){
-    if (balls.size() == 0){
+    if (balls.size() == 0){    
       for (int i = 0; i < ballAmount; i++){
         balls.add(new Ball(width / 2, height / 2));
       }    
@@ -86,6 +98,6 @@ class Board {
       checkBall(ball);
       checkPlayerCollision(ball);
     }
-    printScore();
+    printScore();  
   }
 }
