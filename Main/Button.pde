@@ -38,9 +38,9 @@ class Button {
   }
   
   public boolean isMouseOver(){
-    return (mouseX + offset > x - w / 2 &&
-        mouseX - offset < x + w / 2 &&
-        mouseY + offset > y - h / 2 &&
-        mouseY - offset < y + h / 2);
+    return (mouseX + buttonOffset > x - w / 2 &&
+        mouseX - buttonOffset < x + w / 2 &&
+        mouseY + buttonOffset > y - h / 2 &&
+        mouseY - buttonOffset < y + h / 2);
   }
 }

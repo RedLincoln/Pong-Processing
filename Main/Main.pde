@@ -1,3 +1,9 @@
+import processing.sound.*;
+
+SoundFile pong;
+SoundFile intro;
+SoundFile ingame;
+
 enum State {
   mainMenu,
   modeMenu,
@@ -10,8 +16,10 @@ Board board;
 Board viewBoard;
 State state = State.mainMenu;
 boolean gameStart = false;
+boolean introPlay = false;
 int radius = 30;
 int offset = radius / 2;
+int buttonOffset = 5;
 int maxSpeed = 10;
 int maxScore = 10;
 int crazyAmount = 25;
@@ -38,6 +46,12 @@ void setup(){
   setupGameOverMenu();
   textAlign(CENTER);
   rectMode(CENTER);
+  ingame = new SoundFile(this, "ingame.mp3");
+  ingame.amp(0.2);
+  pong = new SoundFile(this, "pong.wav");
+  pong.amp(0.2);
+  intro = new SoundFile(this, "intro.wav");
+  intro.amp(0.2);
 }
 
 void setupMainMenu(){
@@ -87,12 +101,18 @@ void draw(){
   if (state == State.modeMenu){
     modeMenuView();
   }else if (state == State.mainMenu){
+    if (!introPlay){
+      introPlay = true;
+      intro.play();
+    }
     mainMenuView();
   }else if (board.gameFinished()){
     state = State.gameOver;
     gameOverView();
   }else if (state == State.prolog){
     prologView();
+  }else if (state == State.play){
+    ingame.play();
   }
 }
 
@@ -152,6 +172,7 @@ void keyPressed(){
   if (state == State.prolog){
     if (keyCode == ' '){
       state = State.play;
+      gameStart = false;
     }
   }
 }

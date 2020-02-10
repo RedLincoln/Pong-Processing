@@ -56,7 +56,9 @@ class Ball {
          if (abs(vx) < maxSpeed)
            vx += (vx > 0) ? 1 : -1;
        }
+       pong.play();
      }
+     
   }
   
   public int getX(){
