@@ -11,7 +11,12 @@ class Ball {
   private void update(){
     x += vx;
     y += vy;
+    if (y < offset || y > height - offset){
+      vy *= -1;
+    }
   }
+  
+  
   
   public void draw(){
     fill(255, 255, 255);
