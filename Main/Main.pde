@@ -31,16 +31,28 @@ Button modeToMainMenuButton;
 void setup(){
   size(1024, 600);
   setupBoard();
-  restartButton  = initButton("Restart", width / 2, height / 2, 180, 40);
-  gameOverToMenuButton = initButton( "Menu", width / 2, height / 2 + 60, 180, 40);
+  setupMainMenu();
+  setupModeMenu();
+  setupGameOverMenu();
+  textAlign(CENTER);
+  rectMode(CENTER);
+}
+
+void setupMainMenu(){
   playButton = initButton("Play", width / 2, height / 2 - 40, 180, 40);
   controlsButton = initButton( "Controls", width / 2, height / 2 + 20, 180, 40);
   exitButton = initButton("Exit", width / 2, height / 2 + 80, 180, 40);
+}
+
+void setupModeMenu(){
   classicButton = initButton("Classic", width / 2, height / 2 - 40, 180, 40);
   crazyButton = initButton("Crazy", width / 2, height / 2 + 20, 180, 40);
   modeToMainMenuButton = initButton("Exit", width / 2, height / 2 + 80, 180, 40);
-  textAlign(CENTER);
-  rectMode(CENTER);
+}
+
+void setupGameOverMenu(){
+  restartButton  = initButton("Restart", width / 2, height / 2, 180, 40);
+  gameOverToMenuButton = initButton( "Menu", width / 2, height / 2 + 60, 180, 40);
 }
 
 void setupBoard(){
