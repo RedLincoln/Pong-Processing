@@ -1,7 +1,7 @@
 class Ball {
   private int x, y;
   private int vx = 2, vy = 2;
-  
+  private boolean dead = false;
   
   public Ball (int x, int y){
     this.x = x;
@@ -11,9 +11,15 @@ class Ball {
   private void update(){
     x += vx;
     y += vy;
-    if (y < offset || y > height - offset){
+    if (x < 0 || x > width){
+      dead = true;
+    }else if (y < offset || y > height - offset){
       vy *= -1;
     }
+  }
+  
+  public boolean isDead(){
+    return dead;
   }
   
   public void draw(){
@@ -40,5 +46,9 @@ class Ball {
            vx += (vx > 0) ? 1 : -1;
        }
      }
+  }
+  
+  public int getX(){
+    return x;
   }
 }

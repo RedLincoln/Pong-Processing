@@ -4,6 +4,7 @@ Board board;
 int radius = 30;
 int offset = radius / 2;
 int maxSpeed = 10;
+int maxScore = 10;
 CustomBoolean p1up = new CustomBoolean();
 CustomBoolean p1down = new CustomBoolean();
 CustomBoolean p2up = new CustomBoolean();

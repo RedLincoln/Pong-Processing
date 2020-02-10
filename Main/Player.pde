@@ -37,6 +37,14 @@ class Player {
     this.downCommand = downCommand;
   }
   
+  public void incrementScore(){
+    score++;
+  }
+  
+  public int getScore(){
+    return score;
+  }
+  
   public int getX(){
     return x;
   }
