@@ -13,6 +13,7 @@ int radius = 30;
 int offset = radius / 2;
 int maxSpeed = 10;
 int maxScore = 10;
+int crazyAmount = 25;
 CustomBoolean p1up = new CustomBoolean();
 CustomBoolean p1down = new CustomBoolean();
 CustomBoolean p2up = new CustomBoolean();
@@ -24,6 +25,9 @@ Button gameOverToMenuButton;
 Button playButton;
 Button controlsButton;
 Button exitButton;
+Button classicButton;
+Button crazyButton;
+Button modeToMainMenuButton;
 
 void setup(){
   size(1024, 600);
@@ -38,9 +42,12 @@ void setup(){
   board.addPlayer(player2);
   restartButton  = initButton("Restart", width / 2, height / 2, 180, 40);
   gameOverToMenuButton = initButton( "Menu", width / 2, height / 2 + 60, 180, 40);
-  playButton = initButton( "Play", width / 2, height / 2 - 40, 180, 40);
+  playButton = initButton("Play", width / 2, height / 2 - 40, 180, 40);
   controlsButton = initButton( "Controls", width / 2, height / 2 + 20, 180, 40);
-  exitButton = initButton( "Exit", width / 2, height / 2 + 80, 180, 40);
+  exitButton = initButton("Exit", width / 2, height / 2 + 80, 180, 40);
+  classicButton = initButton("Classic", width / 2, height / 2 - 40, 180, 40);
+  crazyButton = initButton("Crazy", width / 2, height / 2 + 20, 180, 40);
+  modeToMainMenuButton = initButton("Exit", width / 2, height / 2 + 80, 180, 40);
   textAlign(CENTER);
   rectMode(CENTER);
 }
@@ -52,7 +59,9 @@ Button initButton(String text, int x, int y, int w, int h){
 }
 
 void draw(){
-  if (state == State.mainMenu){
+  if (state == State.modeMenu){
+    modeMenuView();
+  }else if (state == State.mainMenu){
     mainMenuView();
   }else if (board.gameFinished()){
     state = State.gameOver;
@@ -60,6 +69,17 @@ void draw(){
   }else {
     board.draw();
   }
+}
+
+void modeMenuView(){
+  fill(255, 255, 255);
+  rect(width / 2, height / 2, 300, 300);
+  fill(0, 0, 0);
+  textSize(20);
+  text("Select Mode", width / 2, height / 2 - 100);
+  classicButton.draw();
+  crazyButton.draw();
+  modeToMainMenuButton.draw();
 }
 
 void mainMenuView(){
@@ -115,7 +135,12 @@ void mouseMoved(){
     playButton.mouseOver();
     controlsButton.mouseOver();
     exitButton.mouseOver();
+  }else if (state == State.modeMenu){
+    classicButton.mouseOver();
+    crazyButton.mouseOver();
+    modeToMainMenuButton.mouseOver();
   }
+  
 }
 
 void mouseClicked(){
@@ -128,12 +153,21 @@ void mouseClicked(){
     }
   }else if (state == State.mainMenu){
     if (playButton.isMouseOver()){
-      state = State.play;
-      board.startGame();
+      state = State.modeMenu;
     }else if(exitButton.isMouseOver()){
       exit();
+    }   
+  }else if (state == State.modeMenu){
+    if (classicButton.isMouseOver()){
+      state = State.play;
+      board.changeBallAmount(1);
+      board.startGame();
+    }else if (crazyButton.isMouseOver()){
+      state = State.play;
+      board.changeBallAmount(crazyAmount);
+      board.startGame();
+    }else if (modeToMainMenuButton.isMouseOver()){
+      state = State.mainMenu;
     }
-    
-        
   }
 }
