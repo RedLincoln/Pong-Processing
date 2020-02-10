@@ -1,6 +1,6 @@
 class Ball {
   private int x, y;
-  private int vx = 2, vy = 2;
+  private int vx = 15, vy = 2;
   private boolean dead = false;
   
   public Ball (int x, int y){

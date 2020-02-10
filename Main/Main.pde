@@ -1,6 +1,14 @@
 import java.util.Random;
 
+enum State {
+  mainMenu,
+  modeMenu,
+  gameOver,
+  play;
+}
+
 Board board;
+State state = State.mainMenu;
 int radius = 30;
 int offset = radius / 2;
 int maxSpeed = 10;
@@ -11,7 +19,11 @@ CustomBoolean p2up = new CustomBoolean();
 CustomBoolean p2down = new CustomBoolean();
 Player player1;
 Player player2;
-
+Button restartButton;
+Button gameOverToMenuButton;
+Button playButton;
+Button controlsButton;
+Button exitButton;
 
 void setup(){
   size(1024, 600);
@@ -24,26 +36,51 @@ void setup(){
   player2.addDownCommand(p2down);
   board.addPlayer(player1);
   board.addPlayer(player2);
+  restartButton  = initButton("Restart", width / 2, height / 2, 180, 40);
+  gameOverToMenuButton = initButton( "Menu", width / 2, height / 2 + 60, 180, 40);
+  playButton = initButton( "Play", width / 2, height / 2 - 40, 180, 40);
+  controlsButton = initButton( "Controls", width / 2, height / 2 + 20, 180, 40);
+  exitButton = initButton( "Exit", width / 2, height / 2 + 80, 180, 40);
   textAlign(CENTER);
+  rectMode(CENTER);
+}
+
+Button initButton(String text, int x, int y, int w, int h){
+ Button button  = new Button(text, x, y, w, h);
+ button.changeFontSize(20);
+ return button;
 }
 
 void draw(){
-  if (board.gameFinished()){
-    board.draw();
+  if (state == State.mainMenu){
+    mainMenuView();
+  }else if (board.gameFinished()){
+    state = State.gameOver;
+    gameOverView();
   }else {
-    rectMode(CENTER);
-    fill(255, 255, 255);
-    rect(width / 2, height / 2, 300, 200);
-    fill(0, 0, 0);
-    textSize(20);
-    text(board.getWinner(), width / 2, height / 2 - 60);
-    Button button  = new Button("Restart", width / 2, height / 2, 180, 40);
-    button.changeFontSize(20);
-    button.draw();
-    Button button2  = new Button("Menu", width / 2, height / 2 + 60, 180, 40);
-    button2.changeFontSize(20);
-    button2.draw();
+    board.draw();
   }
+}
+
+void mainMenuView(){
+  fill(255, 255, 255);
+  rect(width / 2, height / 2, 300, 300);
+  fill(0, 0, 0);
+  textSize(20);
+  text("Pong !!!", width / 2, height / 2 - 100);
+  playButton.draw();
+  controlsButton.draw();
+  exitButton.draw();
+}
+
+void gameOverView(){
+  fill(255, 255, 255);
+  rect(width / 2, height / 2, 300, 200);
+  fill(0, 0, 0);
+  textSize(20);
+  text(board.getWinner() + " Won", width / 2, height / 2 - 60);
+  restartButton.draw();
+  gameOverToMenuButton.draw();
 }
 
 void keyPressed(){
@@ -67,5 +104,36 @@ void keyReleased(){
     p2up.setState(false);
   }else if(keyCode == DOWN){
     p2down.setState(false);
+  }
+}
+
+void mouseMoved(){
+  if (state == State.gameOver){
+    restartButton.mouseOver();
+    gameOverToMenuButton.mouseOver();
+  }else if (state == State.mainMenu){
+    playButton.mouseOver();
+    controlsButton.mouseOver();
+    exitButton.mouseOver();
+  }
+}
+
+void mouseClicked(){
+  if (state == State.gameOver){
+    if (restartButton.isMouseOver()){
+      state = State.play;
+      board.startGame();
+    }else if (gameOverToMenuButton.isMouseOver()){
+      state = State.mainMenu;
+    }
+  }else if (state == State.mainMenu){
+    if (playButton.isMouseOver()){
+      state = State.play;
+      board.startGame();
+    }else if(exitButton.isMouseOver()){
+      exit();
+    }
+    
+        
   }
 }

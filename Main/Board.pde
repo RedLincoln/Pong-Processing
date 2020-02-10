@@ -94,11 +94,23 @@ class Board {
     return winner;
   }
   
+  public void startGame(){
+    for (Player player: players){
+      player.restartScore();
+    }
+    initBalls();
+  }
+  
+  private void initBalls(){
+    balls.clear();
+    for (int i = 0; i < ballAmount; i++){
+        balls.add(new Ball(width / 2, height / 2));
+      }
+  }
+  
   public void draw(){
     if (balls.size() == 0){    
-      for (int i = 0; i < ballAmount; i++){
-        balls.add(new Ball(width / 2, height / 2));
-      }    
+      initBalls();
     }
     background(0, 0, 0);
     drawMiddle();

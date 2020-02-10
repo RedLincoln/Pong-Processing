@@ -46,6 +46,10 @@ class Player {
     return score;
   }
   
+  public void restartScore(){
+    score = 0;
+  }
+  
   public int getX(){
     return x;
   }
