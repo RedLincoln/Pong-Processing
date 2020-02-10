@@ -26,9 +26,17 @@ class Ball {
      int minX = x - w / 2 - offset;
      int rangeY = h + 2 * offset;
      int rangeX = w + 2 * offset;
-     
-     if (this.x > minX && this.y > minY && this.y < (minY + rangeY)){
-       vx += -1;
+       
+     if (this.x > minX && this.x < (minX + rangeX) && this.y > minY && this.y < (minY + rangeY)){
+       float xPos = abs(float(this.x - minX) / float(rangeX));
+       float yPos = abs(float(this.y - minY) / float(rangeY));
+       System.out.println(yPos);
+       if (yPos < 0.1 || yPos > 0.9){
+         vy *= -1;
+       }
+       if ((vx > 0 && xPos <= 0.5) || (vx < 0 && xPos > 0.90)){
+         vx *= -1;
+       }
      }
   }
 }

@@ -49,5 +49,6 @@ class Board {
     drawMiddle();
     drawPlayers();
     drawBalls();
+    checkPlayerCollision();
   }
 }
