@@ -5,6 +5,12 @@ SoundFile intro;
 SoundFile ingame;
 SoundFile finish;
 
+PImage up;
+PImage down;
+PImage w;
+PImage s;
+PImage p;
+
 enum State {
   mainMenu,
   modeMenu,
@@ -25,7 +31,7 @@ int offset = radius / 2;
 int buttonOffset = 5;
 int maxSpeed = 10;
 int maxScore = 10;
-int maxMaxScore = 25;
+int maxMaxScore = 15;
 int minMaxScore = 5;
 int crazyAmount = 25;
 int maxCrazyAmount = 40;
@@ -72,8 +78,18 @@ void setup(){
   intro = new SoundFile(this, "intro.wav");
   finish = new SoundFile(this, "finish.wav");
   changeVolume(volume);
+  loadImages();
 }
  
+void loadImages(){
+  up = loadImage("arrow-up-icon.png");
+  down = loadImage("arrow-down-icon.png");
+  w = loadImage("letter-w-icon.png");
+  s = loadImage("letter-s-icon.png");
+  p = loadImage("letter-s-icon.png");
+}
+
+
 void changeVolume(float volume){
   ingame.amp(volume);
   pong.amp(volume);
@@ -192,9 +208,17 @@ void prologView(){
     board.draw();
   }
   textSize(35);
+  fill(200, 200, 200);
   text("Press space to start", width / 2, height / 4);
   text(player1.getName(), width / 4, height / 2);
   text(player2.getName(), 3 * width / 4, height / 2); 
+  image(w, (int)width * 0.1 , 60, 50, 50);
+  image(up, (int)width * 0.9, 60, 50, 50);
+  image(s, (int)width * 0.1, height - 60, 50, 50);
+  image(down, (int)width * 0.9, height - 60, 50, 50);
+  textSize(22);
+  text("Pause: ", width / 2 - 60, height - 25);
+  image(p, (int)width / 2, height - 60, 50, 50);
 }
 
 void pauseView(){

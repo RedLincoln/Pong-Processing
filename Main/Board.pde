@@ -62,12 +62,12 @@ class Board {
   }
    
   private void printScore(){
-    textSize(24);
+    textSize(30);
     for (Player player: players){
       if (player.getX() < width / 2){
-        text(player.getScore(), width / 4, 20);
+        text(player.getScore(), width / 4, 40);
       }else {
-        text(player.getScore(), (width / 4) * 3, 20);
+        text(player.getScore(), (width / 4) * 3, 40);
       }
     }   
   }
