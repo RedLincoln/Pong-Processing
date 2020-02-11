@@ -121,7 +121,7 @@ void setupMainMenu(){
 void setupModeMenu(){
   classicButton = initButton("Classic", width / 2, height / 2 - 40, 180, 40);
   crazyButton = initButton("Crazy", width / 2, height / 2 + 20, 180, 40);
-  modeToMainMenuButton = initButton("Exit", width / 2, height / 2 + 80, 180, 40);
+  modeToMainMenuButton = initButton("Menu", width / 2, height / 2 + 80, 180, 40);
 }
 
 void setupGameOverMenu(){
