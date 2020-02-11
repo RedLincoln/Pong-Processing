@@ -41,14 +41,14 @@ class Ball {
   
   public void checkCollision(int x, int y, int w, int h){
      int minY = y - h / 2 - offset;
-     int minX = x - w / 2 - offset - vx;
+     int minX = x - w / 2 - offset + vx;
      int rangeY = h + 2 * offset;
-     int rangeX = w + 2 * offset;
+     int rangeX = w + 2 * offset + abs(vx);
        
      if (this.x > minX && this.x < (minX + rangeX) && this.y > minY && this.y < (minY + rangeY)){
        float xPos = abs(float(this.x - minX) / float(rangeX));
        float yPos = abs(float(this.y - minY) / float(rangeY));
-       if (yPos < 0.1 || yPos > 0.9){
+       if ((vy > 0 && yPos < 0.1) || (vy < 0 && yPos > 0.9)){
          vy *= -1;
        }
        if ((vx > 0 && xPos <= 0.5) || (vx < 0 && xPos > 0.90)){
