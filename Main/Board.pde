@@ -17,6 +17,10 @@ class Board {
     this.ballAmount = ballAmount; 
   }
   
+  private void changeMaxScore(int maxScore){
+    this.maxScore = maxScore;
+  }
+  
   
   private void drawMiddle(){
     int reach = 0;
@@ -83,7 +87,7 @@ class Board {
   public String getWinner(){
     String winner = "No one";
     for (Player player: players){
-      if (player.getScore() == maxScore){
+      if (player.getScore() >= maxScore){
         winner = player.getName();
         break;
       }

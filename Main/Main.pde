@@ -3,13 +3,16 @@ import processing.sound.*;
 SoundFile pong;
 SoundFile intro;
 SoundFile ingame;
+SoundFile finish;
 
 enum State {
   mainMenu,
   modeMenu,
   gameOver,
   play,
-  prolog;
+  prolog,
+  pause,
+  options;
 }
 
 Board board;
@@ -22,7 +25,14 @@ int offset = radius / 2;
 int buttonOffset = 5;
 int maxSpeed = 10;
 int maxScore = 10;
+int maxMaxScore = 25;
+int minMaxScore = 5;
 int crazyAmount = 25;
+int maxCrazyAmount = 40;
+int minCrazyAmount = 20;
+float volume = 0.2;
+float maxVolume = 1;
+float minVolume = 0.0;
 CustomBoolean p1up = new CustomBoolean();
 CustomBoolean p1down = new CustomBoolean();
 CustomBoolean p2up = new CustomBoolean();
@@ -32,11 +42,20 @@ Player player2;
 Button restartButton;
 Button gameOverToMenuButton;
 Button playButton;
-Button controlsButton;
+Button optionButton;
 Button exitButton;
 Button classicButton;
 Button crazyButton;
 Button modeToMainMenuButton;
+Button resumeButton;
+Button pauseToMenuButton; 
+Button moreSoundButton;
+Button lessSoundButton;
+Button moreScoreButton;
+Button lessScoreButton;
+Button moreBallsButton;
+Button lessBallsButton;
+Button optionsToMenuButton;
 
 void setup(){
   size(1024, 600);
@@ -44,19 +63,42 @@ void setup(){
   setupMainMenu();
   setupModeMenu();
   setupGameOverMenu();
+  setupPauseMenu();
+  setupOptionsMenu();
   textAlign(CENTER);
   rectMode(CENTER);
   ingame = new SoundFile(this, "ingame.mp3");
-  ingame.amp(0.2);
   pong = new SoundFile(this, "pong.wav");
-  pong.amp(0.2);
   intro = new SoundFile(this, "intro.wav");
-  intro.amp(0.2);
+  finish = new SoundFile(this, "finish.wav");
+  changeVolume(volume);
+}
+ 
+void changeVolume(float volume){
+  ingame.amp(volume);
+  pong.amp(volume);
+  intro.amp(volume);
+  finish.amp(volume);
+} 
+ 
+void setupPauseMenu(){
+  resumeButton = initButton("Resume", width / 2, height / 2, 180, 40);
+  pauseToMenuButton = initButton("Menu", width / 2, height / 2 + 60, 180, 40);
+}
+
+void setupOptionsMenu(){
+  moreSoundButton = initButton(">", width / 2 + 85, height / 2 - 40 , 40, 40);
+  lessSoundButton = initButton("<", width / 2 - 85, height / 2 - 40 , 40, 40);
+  moreScoreButton = initButton(">", width / 2 + 85, height / 2 + 20 , 40, 40);
+  lessScoreButton = initButton("<", width / 2 - 85, height / 2 + 20 , 40, 40);
+  moreBallsButton = initButton(">", width / 2 + 85, height / 2 + 80 , 40, 40);
+  lessBallsButton = initButton("<", width / 2 - 85, height / 2 + 80 , 40, 40);
+  optionsToMenuButton = initButton("Menu", width / 2, height / 2 + 130, 180, 20);
 }
 
 void setupMainMenu(){
   playButton = initButton("Play", width / 2, height / 2 - 40, 180, 40);
-  controlsButton = initButton( "Controls", width / 2, height / 2 + 20, 180, 40);
+  optionButton = initButton( "Options", width / 2, height / 2 + 20, 180, 40);
   exitButton = initButton("Exit", width / 2, height / 2 + 80, 180, 40);
 }
 
@@ -92,10 +134,12 @@ Button initButton(String text, int x, int y, int w, int h){
 }
 
 void draw(){
-  if (state != State.play && board.gameFinished()){
+  if ((state == State.mainMenu ||
+       state == State.modeMenu ||
+       state == State.options) && board.gameFinished()){
       board.startGame();
   }
-  if (state != State.prolog){
+  if (state != State.prolog && state != State.gameOver && state != State.pause){
     board.draw();
   }
   if (state == State.modeMenu){
@@ -103,17 +147,43 @@ void draw(){
   }else if (state == State.mainMenu){
     if (!introPlay){
       introPlay = true;
-      intro.play();
+      intro.play(); 
     }
     mainMenuView();
-  }else if (board.gameFinished()){
+  }else if (board.gameFinished() && state == State.play){
+    ingame.stop();
+    finish.play();
     state = State.gameOver;
-    gameOverView();
   }else if (state == State.prolog){
     prologView();
-  }else if (state == State.play){
-    ingame.play();
+  }else if (state == State.play && !ingame.isPlaying()){
+    ingame.loop();    
+  }else if (state == State.gameOver){
+    gameOverView();
+  }else if(state == State.pause){
+    pauseView();
+  }else if (state == State.options){
+    optionsView();
   }
+  
+}
+
+void optionsView(){
+  fill(255, 255, 255);
+  rect(width / 2, height / 2, 300, 300);
+  fill(0, 0, 0);
+  textSize(20);
+  text("Options", width / 2, height / 2 - 100);
+  text("Sound: " + Math.round(volume * 100) + "%", width / 2, height / 2 - 35);
+  text("Score: " + maxScore, width / 2, height / 2 + 25);
+  text("Balls: " + crazyAmount, width / 2, height / 2 + 85);
+  moreSoundButton.draw();
+  lessSoundButton.draw();
+  moreScoreButton.draw();
+  lessScoreButton.draw();
+  moreBallsButton.draw();
+  lessBallsButton.draw();
+  optionsToMenuButton.draw();
 }
 
 void prologView(){
@@ -125,6 +195,16 @@ void prologView(){
   text("Press space to start", width / 2, height / 4);
   text(player1.getName(), width / 4, height / 2);
   text(player2.getName(), 3 * width / 4, height / 2); 
+}
+
+void pauseView(){
+  fill(255, 255, 255);
+  rect(width / 2, height / 2, 300, 200);
+  fill(0, 0, 0);
+  textSize(20);
+  text("Pause", width / 2, height / 2 - 60);
+  resumeButton.draw();
+  pauseToMenuButton.draw();
 }
 
 void modeMenuView(){
@@ -145,7 +225,7 @@ void mainMenuView(){
   textSize(20);
   text("Pong !!!", width / 2, height / 2 - 100);
   playButton.draw();
-  controlsButton.draw();
+  optionButton.draw();
   exitButton.draw();
 }
 
@@ -168,6 +248,8 @@ void keyPressed(){
     p2up.setState(true);
   }else if(keyCode == DOWN){
     p2down.setState(true);
+  }else if(key == 'p' && state == State.play){
+    state = State.pause;
   }
   if (state == State.prolog){
     if (keyCode == ' '){
@@ -195,14 +277,24 @@ void mouseMoved(){
     gameOverToMenuButton.mouseOver();
   }else if (state == State.mainMenu){
     playButton.mouseOver();
-    controlsButton.mouseOver();
+    optionButton.mouseOver();
     exitButton.mouseOver();
   }else if (state == State.modeMenu){
     classicButton.mouseOver();
     crazyButton.mouseOver();
     modeToMainMenuButton.mouseOver();
+  }else if (state == State.pause){
+    resumeButton.mouseOver();
+    pauseToMenuButton.mouseOver();
+  }else if (state == State.options){
+    moreSoundButton.mouseOver();
+    lessSoundButton.mouseOver();
+    moreScoreButton.mouseOver();
+    lessScoreButton.mouseOver();
+    moreBallsButton.mouseOver();
+    lessBallsButton.mouseOver();
+    optionsToMenuButton.mouseOver();
   }
-  
 }
 
 void mouseClicked(){
@@ -216,6 +308,8 @@ void mouseClicked(){
   }else if (state == State.mainMenu){
     if (playButton.isMouseOver()){
       state = State.modeMenu;
+    }else if (optionButton.isMouseOver()){
+      state = State.options;
     }else if(exitButton.isMouseOver()){
       exit();
     }   
@@ -230,6 +324,32 @@ void mouseClicked(){
       board.startGame();
     }else if (modeToMainMenuButton.isMouseOver()){
       state = State.mainMenu;
+    }
+  }else if (state == State.pause){
+    if (resumeButton.isMouseOver()){
+      state = State.play;
+    }else if (pauseToMenuButton.isMouseOver()){
+      state = State.mainMenu;
+    }
+  }else if  (state == State.options){
+    if (optionsToMenuButton.isMouseOver()){
+      state = State.mainMenu;
+    }else if (moreSoundButton.isMouseOver()){
+      volume += (volume < maxVolume) ? 0.1 : 0;
+      changeVolume(volume);
+    }else if (lessSoundButton.isMouseOver()){
+      volume -= (volume > minVolume) ? 0.1 : 0;
+      changeVolume(volume);
+    }else if (moreScoreButton.isMouseOver()){
+      maxScore += (maxScore < maxMaxScore) ? 1 : 0;
+      board.changeMaxScore(maxScore);
+    }else if (lessScoreButton.isMouseOver()){
+      maxScore -= (maxScore > minMaxScore) ? 1 : 0;
+      board.changeMaxScore(maxScore);
+    }else if (moreBallsButton.isMouseOver()){
+      crazyAmount += (crazyAmount < maxCrazyAmount) ? 1 : 0;
+    }else if (lessBallsButton.isMouseOver()){
+      crazyAmount -= (crazyAmount > minCrazyAmount) ? 1 : 0;
     }
   }
 }
