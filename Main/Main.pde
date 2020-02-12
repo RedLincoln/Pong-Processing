@@ -5,6 +5,8 @@ SoundFile intro;
 SoundFile ingame;
 SoundFile finish;
 
+PFont font;
+
 PImage up;
 PImage down;
 PImage w;
@@ -77,6 +79,9 @@ void setup(){
   pong = new SoundFile(this, "pong.wav");
   intro = new SoundFile(this, "intro.wav");
   finish = new SoundFile(this, "finish.wav");
+  font = createFont("bit5x3.ttf", 32);
+  textFont(font);
+  stroke(255, 255, 255);
   changeVolume(volume);
   loadImages();
 }
@@ -109,7 +114,8 @@ void setupOptionsMenu(){
   lessScoreButton = initButton("<", width / 2 - 85, height / 2 + 20 , 40, 40);
   moreBallsButton = initButton(">", width / 2 + 85, height / 2 + 80 , 40, 40);
   lessBallsButton = initButton("<", width / 2 - 85, height / 2 + 80 , 40, 40);
-  optionsToMenuButton = initButton("Menu", width / 2, height / 2 + 130, 180, 20);
+  optionsToMenuButton = initButton("Menu", width / 2, height / 2 + 130, 180, 30);
+  optionsToMenuButton.changeFontSize(20);
 }
 
 void setupMainMenu(){
@@ -145,7 +151,7 @@ void setupBoard(){
 
 Button initButton(String text, int x, int y, int w, int h){
  Button button  = new Button(text, x, y, w, h);
- button.changeFontSize(20);
+ button.changeFontSize(28);
  return button;
 }
 
@@ -158,6 +164,9 @@ void draw(){
   if (state != State.prolog && state != State.gameOver && state != State.pause){
     board.draw();
   }
+  if (state != State.play  && state != State.pause && ingame.isPlaying()){
+    ingame.stop();
+  }
   if (state == State.modeMenu){
     modeMenuView();
   }else if (state == State.mainMenu){
@@ -167,7 +176,6 @@ void draw(){
     }
     mainMenuView();
   }else if (board.gameFinished() && state == State.play){
-    ingame.stop();
     finish.play();
     state = State.gameOver;
   }else if (state == State.prolog){
@@ -177,6 +185,7 @@ void draw(){
   }else if (state == State.gameOver){
     gameOverView();
   }else if(state == State.pause){
+    ingame.pause();
     pauseView();
   }else if (state == State.options){
     optionsView();
@@ -184,12 +193,19 @@ void draw(){
   
 }
 
-void optionsView(){
-  fill(255, 255, 255);
-  rect(width / 2, height / 2, 300, 300);
+void planeRect(int x, int y, int w, int h){
   fill(0, 0, 0);
-  textSize(20);
+  strokeWeight(8);
+  rect(x, y, w, h, 7);
+  strokeWeight(1);
+  fill(255, 255, 255);
+}
+
+void optionsView(){
+  planeRect(width / 2, height / 2, 300, 300);
+  textSize(30);
   text("Options", width / 2, height / 2 - 100);
+  textSize(20);
   text("Sound: " + Math.round(volume * 100) + "%", width / 2, height / 2 - 35);
   text("Score: " + maxScore, width / 2, height / 2 + 25);
   text("Balls: " + crazyAmount, width / 2, height / 2 + 85);
@@ -207,35 +223,44 @@ void prologView(){
     gameStart = true;
     board.draw();
   }
+  planeRect(width / 2, height / 2, 700, 400);
+  textSize(30);
+  text("Press\"Space Bar\" to start", width / 2, height / 2 - 150);
+  text("Pause:", width / 2, height / 2 - 100);
+  int gap = 5;
+  int icc = 15;
+  for (int i = width / 2 - 300; i < width / 2 + 300; i+= (icc + gap)){
+    line(i, height/2 - 50, i + icc, height / 2 - 50);
+  }
+  text("Player 1: ", width / 2 - 250, height / 2);
+  planeRect(width / 2 - 300, height / 2 + 50, 50, 50);
+  planeRect(width / 2 - 300, height / 2 + 120, 50, 50);
+  text("Player 2: ", width / 2 + 250, height / 2);
+  planeRect(width / 2 + 275, height / 2 + 50, 50, 50);
+  planeRect(width / 2 + 275, height / 2 + 120, 50, 50);
   textSize(35);
-  fill(200, 200, 200);
-  text("Press space to start", width / 2, height / 4);
-  text(player1.getName(), width / 4, height / 2);
-  text(player2.getName(), 3 * width / 4, height / 2); 
-  image(w, (int)width * 0.1 , 60, 50, 50);
-  image(up, (int)width * 0.9, 60, 50, 50);
-  image(s, (int)width * 0.1, height - 60, 50, 50);
-  image(down, (int)width * 0.9, height - 60, 50, 50);
-  textSize(22);
-  text("Pause: ", width / 2 - 60, height - 25);
-  image(p, (int)width / 2, height - 60, 50, 50);
+  strokeWeight(5);
+  line(width / 2 + 275, height / 2 + 65, width / 2 + 275, height / 2 + 32);
+  line(width / 2 + 265, height / 2 + 45, width / 2 + 275, height / 2 + 32);
+  line(width / 2 + 285, height / 2 + 45, width / 2 + 275, height / 2 + 32);
+  line(width / 2 + 275, height / 2 + 135, width / 2 + 275, height / 2 + 105);
+  line(width / 2 + 275, height / 2 + 135, width / 2 + 265, height / 2 + 122);
+  line(width / 2 + 275, height / 2 + 135, width / 2 + 285, height / 2 + 122);
+  text("W", width / 2 - 297, height / 2 + 60);
+  text("S", width / 2 - 297, height / 2 + 130);
 }
 
 void pauseView(){
-  fill(255, 255, 255);
-  rect(width / 2, height / 2, 300, 200);
-  fill(0, 0, 0);
-  textSize(20);
+  planeRect(width / 2, height / 2, 300, 200);
+  textSize(30);
   text("Pause", width / 2, height / 2 - 60);
   resumeButton.draw();
   pauseToMenuButton.draw();
 }
 
 void modeMenuView(){
-  fill(255, 255, 255);
-  rect(width / 2, height / 2, 300, 300);
-  fill(0, 0, 0);
-  textSize(20);
+  planeRect(width / 2, height / 2, 300, 300);
+  textSize(30);
   text("Select Mode", width / 2, height / 2 - 100);
   classicButton.draw();
   crazyButton.draw();
@@ -243,10 +268,8 @@ void modeMenuView(){
 }
 
 void mainMenuView(){
-  fill(255, 255, 255);
-  rect(width / 2, height / 2, 300, 300);
-  fill(0, 0, 0);
-  textSize(20);
+  planeRect(width / 2, height / 2, 300, 300);
+  textSize(30);
   text("Pong !!!", width / 2, height / 2 - 100);
   playButton.draw();
   optionButton.draw();
@@ -254,10 +277,8 @@ void mainMenuView(){
 }
 
 void gameOverView(){
-  fill(255, 255, 255);
-  rect(width / 2, height / 2, 300, 200);
-  fill(0, 0, 0);
-  textSize(20);
+  planeRect(width / 2, height / 2, 300, 200);
+  textSize(30);
   text(board.getWinner() + " Won", width / 2, height / 2 - 60);
   restartButton.draw();
   gameOverToMenuButton.draw();

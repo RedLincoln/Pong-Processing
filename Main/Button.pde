@@ -17,16 +17,18 @@ class Button {
   
   public void draw(){
     if (over)
-      fill(192, 192, 192);
+      fill(50, 50, 50);
     else
-      fill(255, 255, 255);
+      fill(0, 0, 0);
     
     rectMode(CENTER);
-    rect(x, y, w, h);
-    fill(0, 0, 0);
+    strokeWeight(5);
+    rect(x, y, w, h, 7);
+    fill(255, 255, 255);
     textSize(fontSize);
     textAlign(CENTER);
-    text(text, x, y + 5);
+    text(text, x, y + 10);
+    strokeWeight(1);
   }
   
   public void mouseOver(){
